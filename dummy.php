@@ -282,7 +282,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-people-fill"></i>
                                                     <i class="fas fa-exclamation"></i>
-                                                    <b>&nbsp View profiles (<?php echo $row_count5; ?>)</b>
+                                                    <b>&nbsp Complaints (<?php echo $row_count5; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -296,7 +296,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-people-fill"></i>
                                                     <i class="fas fa-clock"></i>
-                                                    <b>&nbsp my profile (<?php echo $row_count1; ?>)</b>
+                                                    <b>&nbsp Work-In Progress (<?php echo $row_count1; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -310,7 +310,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-house-door-fill"></i>
                                                     <i class="mdi mdi-check-all"></i>
-                                                    <b>&nbsp Requests sent (<?php echo $row_count2; ?>)</b>
+                                                    <b>&nbsp Completed Work (<?php echo $row_count2; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -324,7 +324,21 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-house-door-fill"></i>
                                                     <i class="mdi mdi-close-circle"></i>
-                                                    <b>&nbsp Requests Received  (<?php echo $row_count3; ?>)</b>
+                                                    <b>&nbsp Rejected Work (<?php echo $row_count3; ?>)</b>
+                                                </span>
+                                            </div>
+                                        </a>
+
+                                    </li>
+                                    <li class="nav-item">
+
+                                        <a class="nav-link" data-toggle="tab" href="#reassign" role="tab">
+                                            <span class="hidden-sm-up"></span>
+                                            <div id="navref6">
+                                                <span class="hidden-xs-down">
+                                                    <i class="bi bi-house-door-fill"></i>
+                                                    <i class="fas fa-redo"></i>
+                                                    <b>&nbsp Reassigned Work (<?php echo $row_count4; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -406,28 +420,100 @@ $row_count4 = mysqli_num_rows($result4);
 
                                 <!------------------Pending Work Modal----------------->
                                 <div class="tab-pane p-20" id="home" role="tabpanel">
-                                    
-                                    <!--pending work modal end -->
-
-                                    <div class="modal fade" id="lettermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
+                                    <div class="modal fade" id="cmodal" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">letter pad</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
+                                                <div class="modal-header" style="background:linear-gradient(to bottom right, #cc66ff 1%, #0033cc 100%);background-color:#7460ee;">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Raise Complaint</h5>
+                                                    <button class="spbutton" type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
                                                 </div>
-                                                <div class="modal-body">
-                                                    ...
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                <div>
+                                                    <form id="addnewuser" enctype="multipart/form-data">
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <input type="hidden" id="hidden_faculty_id" value="<?php echo $_SESSION['faculty_id']; ?>">
+                                                                <input type="hidden" class="form-control" name="faculty_id" id="faculty_id" value="<?php echo $_SESSION['faculty_id']; ?>" readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="block" class="form-label">Block</label>
+                                                                <input type="text" class="form-control" name="block_venue" placeholder="Eg:RK-206" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="venue" class="form-label">Venue</label>
+                                                                <select class="form-control" name="venue_name"
+                                                                    style="width: 100%; height:36px;">
+                                                                    <option>Select</option>
+                                                                    <option value="class">Class Room</option>
+                                                                    <option value="department">Department</option>
+                                                                    <option value="lab">Lab</option>
+                                                                    <option value="staff_room">Staff Room</option>
+                                                                    <option value="Other">other</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                            <input type="checkbox" id="yes" name="yes" value="yes" >
+                                                            <label for="yes" >Require new Product</label><br>
+                                                            <button type="button" class="btn btn-primary" id="formbtn" data-toggle="modal" data-target="#lettermodal" style="display:none">New product form
+</button>                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="type_of_problem" class="form-label">Type of Problem</label>
+                                                                <select class="form-control" name="type_of_problem" style="width: 100%; height:36px;">
+                                                                    <option>Select</option>
+                                                                    <option value="Electrical Work">ELECTRICAL</option>
+                                                                    <option value="Carpenter Work">CARPENTER</option>
+                                                                    <option value="Civil Work">CIVIL</option>
+                                                                    <option value="Partition Work">PARTITION</option>
+                                                                    <option value="IT Infra Work">IT INFRA </option>
+                                                                    <option value="Plumbing Work">PLUMBING </option>
+                                                                    <option value="Other">other </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="description" class="form-label">Problem Description</label>
+                                                                <input type="text" class="form-control" name="problem_description" placeholder="Enter Description" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="images" class="form-label">Image</label>
+                                                                <input type="file" class="form-control" name="images" id="images" onchange="validateSize(this)">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <input type="hidden" class="form-control" name="date_of_reg" id="date_of_reg" required>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" name="status" value="1">
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!--pending work modal end -->
+
+                                    <div class="modal fade" id="lettermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">letter pad</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
                                     <!-- Pending table Start-->
                                     <div class="row">
@@ -435,6 +521,7 @@ $row_count4 = mysqli_num_rows($result4);
                                             <div class="card">
                                                 <div class="card-body">
                                                     <div>
+                                                        <button type="button" class="btn btn-info float-right" data-bs-toggle="modal" data-bs-target="#cmodal">Raise Compliant</button>
                                                         <br>
                                                         <br>
                                                     </div>
@@ -443,21 +530,59 @@ $row_count4 = mysqli_num_rows($result4);
                                                             <thead>
                                                                 <tr>
                                                                     <th class="text-center"><b>S.No</b></th>
-                                                                    <th class="text-center"><b>Name</b></th>
-                                                                    <th class="text-center"><b>Specializatin</b></th>
-                                                                    <th class="text-center"><b>Languages</b></th>
-                                                                    <th class="text-center"><b>Qualification</b></th>
-                                                                    <th class="text-center"><b>Ratings</b></th>
-                                                                    <th class="text-center"><b>Documents</b></th>
-                                                                    <th class="text-center"><b>Request session</b></th>
+                                                                    <th class="text-center"><b>Problem_id</b></th>
+                                                                    <th class="text-center"><b>Venue</b></th>
+                                                                    <th class="text-center"><b>Problem</b></th>
+                                                                    <th class="text-center"><b>Problem description</b></th>
+                                                                    <th class="text-center"><b>Date Of submission</b></th>
+                                                                    <th class="text-center"><b>Photo</b></th>
+                                                                    <th class="text-center"><b>Status</b></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <?php
                                                                 $s = 1;
                                                                 while ($row = mysqli_fetch_assoc($result5)) {
-                                                                    
-                                                                    
+                                                                    $statusMessage = '';
+                                                                    $hodforward = '';
+                                                                    $principalforward = '';
+                                                                    $managerforward = '';
+                                                                    $forwardedtoprincipal = '';
+                                                                    $infraforward= '' ;
+                                                                    $sendtoworker ='';
+                                                                    switch ($row['status']) {
+                                                                        case 1:
+                                                                            $statusMessage = 'Pending';
+                                                                            break;
+                                                                        case 2:
+                                                                            $infraforward = 'Approved by Infra';
+                                                                            break;
+                                                                        case 4:
+                                                                            $infraforward = 'Approved by Infra';
+                                                                            $hodforward = 'Approved by HOD';
+                                                                            break;
+                                                                        case 6:
+                                                                            $infraforward = 'Approved by Infra';
+                                                                            $hodforward = 'Approved by HOD';
+                                                                            $managerforward = ' Approved by Manager';
+                                                                            $forwardedtoprincipal = 'Sent to Principal for Approval';
+                                                                            break;
+                                                                        case 8:
+                                                                            $infraforward = 'Approved by Infra';
+                                                                            $hodforward = 'Approved by HOD';
+                                                                            $managerforward = ' Approved by Manager';
+                                                                            $forwardedtoprincipal = 'Sent to Principal for Approval';
+                                                                            $forwardedtoprincipal = 'Approved by Principal ';
+                                                                            break;
+                                                                        case 9:
+                                                                            $infraforward = 'Approved by Infra';
+                                                                            $hodforward = 'Approved by HOD';
+                                                                            $principalforward = ' Approved by Manager';
+                                                                            $sendtoworker ='Worker send to worker';
+                                                                            break;
+                                                                        default:
+                                                                            $statusMessage = 'Unknown Status';
+                                                                    }
                                                                 ?>
                                                                     <tr>
                                                                         <td class="text-center"><?php echo $s; ?></td>
@@ -478,35 +603,55 @@ $row_count4 = mysqli_num_rows($result4);
                                                                                         <i class="fas fa-times"></i>
                                                                                     </button>
                                                                                 </center>
-                                                                            <?php } else { ?>
+                                                                            <?php }
+                                                                            
+                                                                            else { ?>
 
-                                                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Approve Details</button>
+                                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Approve Details</button>                                                                      
+          
 
+                                                                             <!--Approval Details Modal -->
+                            <div class="modal fade" id="approvaldetails" tabindex="-1" role="dialog"
+                                aria-labelledby="approvaldetailsLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="approvaldetailsLabel" style="color: #000000;" >Approval details</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
 
-                                                                                <!--Approval Details Modal -->
-                                                                                <div class="modal fade" id="approvaldetails" tabindex="-1" role="dialog"
-                                                                                    aria-labelledby="approvaldetailsLabel" aria-hidden="true">
-                                                                                    <div class="modal-dialog" role="document">
-                                                                                        <div class="modal-content">
-                                                                                            <div class="modal-header">
-                                                                                                <h5 class="modal-title" id="approvaldetailsLabel" style="color: #000000;">Approval details</h5>
-                                                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                                                    aria-label="Close">
-                                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                                </button>
-                                                                                            </div>
-                                                                                            <div class="modal-body"> 
-                                                                                            <?php } ?>
+                                        
+                                                                                   <b>
 
-                                                                                            </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="button" class="btn btn-secondary"
-                                                                                                    data-dismiss="modal">Close</button>
-                                                                                                <!-- <button type="submit" class="btn btn-danger">Submit</button> -->
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                   <?php
+                                                                                   echo $statusMessage ."<br>";
+                                                                                    echo $infraforward ."<br>";
+                                                                                   echo $hodforward ."<br>";
+                                                                                   echo $managerforward ."<br>";
+                                                                                   echo $forwardedtoprincipal ."<br>";
+                                                                                   echo $principalforward ."<br>";
+                                                                                   echo $sendtoworker; 
+                                                                                   
+                                                                                   
+                                                                                                                                                                                                                                                              
+                                                                                     ?>                                                                                   
+                                                                                   
+                                                                                   </b>
+                                                                            <?php } ?>
+                                             
+                                        </div>
+                                        <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <!-- <button type="submit" class="btn btn-danger">Submit</button> -->
+                                                </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
 
@@ -525,7 +670,7 @@ $row_count4 = mysqli_num_rows($result4);
                                     </div>
                                 </div>
 
-
+                             
 
 
                                 <!------------------Complain form Page Ends----------------->
@@ -880,14 +1025,15 @@ $row_count4 = mysqli_num_rows($result4);
 
 
         $('input[id="yes"]').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('#formbtn').show();
-            } else {
-                $('#formbtn').hide();
+        if ($(this).is(':checked')) {
+            $('#formbtn').show();
+        } 
+        else{
+            $('#formbtn').hide();
 
 
-            }
-        });
+        }
+    });
     </script>
 
 

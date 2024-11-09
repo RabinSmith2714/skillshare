@@ -109,7 +109,7 @@ if (isset($_POST['get_image'])) {
     }
 
     // Query to fetch the image based on id
-    $query = "SELECT id, images FROM complaints_detail WHERE id = ?";
+    $query = "SELECT  FROM skilltable WHERE id = ?";
     $stmt = $conn->prepare($query);
 
     if (!$stmt) {
