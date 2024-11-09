@@ -14,7 +14,7 @@ $faculty_id = $_SESSION['faculty_id']; // Assuming 'faculty_id' is stored in ses
 $query = "SELECT * FROM complaints_detail WHERE faculty_id = '$faculty_id'";
 $result = mysqli_query($conn, $query);
 
-$sql5 = "SELECT * FROM complaints_detail WHERE status IN (1,2,4,6,8,9) AND faculty_id = '$faculty_id'";
+$sql5 = "SELECT * FROM skilltable";
 $sql1 = "SELECT * FROM complaints_detail WHERE status IN (7,10,11,17,18) AND faculty_id = '$faculty_id'";
 $sql2 = "SELECT * FROM complaints_detail WHERE status = 16 AND faculty_id = '$faculty_id'";
 $sql3 = "SELECT * FROM complaints_detail WHERE status IN (3,5,19,20) AND faculty_id = '$faculty_id'";
@@ -461,55 +461,18 @@ $row_count4 = mysqli_num_rows($result4);
                                                                 ?>
                                                                     <tr>
                                                                         <td class="text-center"><?php echo $s; ?></td>
-                                                                        <td class="text-center"><?php echo $row['id']; ?></td>
-                                                                        <td class="text-center"><?php echo $row['block_venue']; ?></td>
-                                                                        <td class="text-center"><?php echo $row['type_of_problem']; ?></td>
-                                                                        <td class="text-center"><?php echo $row['problem_description']; ?></td>
-                                                                        <td class="text-center"><?php echo $row['date_of_reg']; ?></td>
+                                                                        <td class="text-center"><?php echo $row['User_name']; ?></td>
+                                                                        <td class="text-center"><?php echo $row['Specialization']; ?></td>
+                                                                        <td class="text-center"><?php echo $row['Language']; ?></td>
+                                                                        <td class="text-center"><?php echo $row['Qualification']; ?></td>
+                                                                        <td class="text-center"><?php echo $row['Rating']; ?></td>
                                                                         <td class="text-center">
                                                                             <button type="button" class="btn showImage" value="<?php echo $row['id']; ?>">
                                                                                 <i class="fas fa-image" style="font-size: 25px;"></i>
                                                                             </button>
                                                                         </td>
                                                                         <td class="text-center">
-                                                                            <?php if ($row['status'] == 1) { ?>
-                                                                                <center>
-                                                                                    <button class="btn btndelete btn-danger" type="button" value="<?php echo $row['id']; ?>">
-                                                                                        <i class="fas fa-times"></i>
-                                                                                    </button>
-                                                                                </center>
-                                                                            <?php } else { ?>
-
-                                                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Approve Details</button>
-
-
-                                                                                <!--Approval Details Modal -->
-                                                                                <div class="modal fade" id="approvaldetails" tabindex="-1" role="dialog"
-                                                                                    aria-labelledby="approvaldetailsLabel" aria-hidden="true">
-                                                                                    <div class="modal-dialog" role="document">
-                                                                                        <div class="modal-content">
-                                                                                            <div class="modal-header">
-                                                                                                <h5 class="modal-title" id="approvaldetailsLabel" style="color: #000000;">Approval details</h5>
-                                                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                                                    aria-label="Close">
-                                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                                </button>
-                                                                                            </div>
-                                                                                            <div class="modal-body"> 
-                                                                                            <?php } ?>
-
-                                                                                            </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="button" class="btn btn-secondary"
-                                                                                                    data-dismiss="modal">Close</button>
-                                                                                                <!-- <button type="submit" class="btn btn-danger">Submit</button> -->
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-
-
+                                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Request</button>
                                                                         </td>
                                                                     </tr>
                                                                 <?php
