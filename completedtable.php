@@ -16,8 +16,8 @@ $result = mysqli_query($conn, $query);
 
 $sql5 = "SELECT * FROM skilltable";
 $sql6 = "SELECT * FROM skilltable WHERE faculty_id = '$faculty_id'";
-$sql1 = "SELECT * FROM complaints_detail WHERE status IN (7,10,11,17,18) AND faculty_id = '$faculty_id'";
-$sql2 = "SELECT * FROM complaints_detail WHERE status = 16 AND faculty_id = '$faculty_id'";
+$sql1 = "SELECT * FROM request WHERE faculty_id = '$faculty_id'";
+$sql2 = "SELECT * FROM request WHERE  user_id = '$faculty_id'";
 $sql3 = "SELECT * FROM complaints_detail WHERE status IN (3,5,19,20) AND faculty_id = '$faculty_id'";
 $sql4 = "SELECT * FROM complaints_detail WHERE status = 15 AND faculty_id = '$faculty_id'";
 
@@ -244,39 +244,39 @@ $row_count4 = mysqli_num_rows($result4);
                         <button class="spbutton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </div>
                     <div class="modal-body">
-                    <form id="addprofile" enctype="multipart/form-data">
-    <!-- Faculty ID from session -->
-    <div class="mb-3">
-        <label for="faculty_id" class="form-label">Faculty ID</label>
-        <input type="text" name="faculty_id" id="faculty_id" class="form-control" value="<?php echo $_SESSION['faculty_id']; ?>" readonly>
-    </div>
-    
-    <!-- Other form fields -->
-    <div class="mb-3">
-        <label for="language" class="form-label">Language</label>
-        <input type="text" name="language" id="language" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="specialization" class="form-label">Specialization</label>
-        <input type="text" name="specialization" id="specialization" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="qualification" class="form-label">Qualification</label>
-        <input type="text" name="qualification" id="qualification" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="document" class="form-label">Document(s)</label>
-        <input type="file" name="document[]" id="document" class="form-control" multiple required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" name="email" id="email" class="form-control" required>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Update</button>
-    </div>
-</form>
+                        <form id="addprofile" enctype="multipart/form-data">
+                            <!-- Faculty ID from session -->
+                            <div class="mb-3">
+                                <label for="faculty_id" class="form-label">Faculty ID</label>
+                                <input type="text" name="faculty_id" id="faculty_id" class="form-control" value="<?php echo $_SESSION['faculty_id']; ?>" readonly>
+                            </div>
+
+                            <!-- Other form fields -->
+                            <div class="mb-3">
+                                <label for="language" class="form-label">Language</label>
+                                <input type="text" name="language" id="language" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="specialization" class="form-label">Specialization</label>
+                                <input type="text" name="specialization" id="specialization" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="qualification" class="form-label">Qualification</label>
+                                <input type="text" name="qualification" id="qualification" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="document" class="form-label">Document(s)</label>
+                                <input type="file" name="document[]" id="document" class="form-control" multiple required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" id="email" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
@@ -360,7 +360,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-house-door-fill"></i>
                                                     <i class="mdi mdi-check-all"></i>
-                                                    <b>&nbsp Requests sent (<?php echo $row_count2; ?>)</b>
+                                                    <b>&nbsp Requests sent (<?php echo $row_count1; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -374,7 +374,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-house-door-fill"></i>
                                                     <i class="mdi mdi-close-circle"></i>
-                                                    <b>&nbsp Requests Received (<?php echo $row_count3; ?>)</b>
+                                                    <b>&nbsp Requests Received (<?php echo $row_count2; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -522,7 +522,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                                         </td>
                                                                         <td class="text-center"><?php echo $row['email']; ?></td>
                                                                         <td class="text-center">
-                                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#request_modal">Request</button>
+                                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#request_modal">Request</button>
                                                                         </td>
                                                                     </tr>
                                                                 <?php
@@ -539,36 +539,39 @@ $row_count4 = mysqli_num_rows($result4);
                                 </div>
                                 <!-- Request modal -->
 
-                                <div class="modal fade" id="request_modal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+                                <!-- Request modal -->
+
+                                <div class="modal fade" id="requestmodal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header" style="background:linear-gradient(to bottom right, #cc66ff 1%, #0033cc 100%);background-color:#7460ee;">
-                                                <h5 class="modal-title" id="feedbackModalLabel">Feedback Form</h5>
-                                                <button class="spbutton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                </div>
+                                                <h5 class="modal-title" id="feedbackModalLabel">Request Form</h5>
+                                                <button type="button" class="btn-close spbutton" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
                                             <div class="modal-body">
                                                 <form id="addrequest" method="post">
-                                                    <input type="hidden" name="id" id="request_id"> <!-- Hidden input for id -->
+                                                    <input type="hidden" name="requestid" id="requestid"> <!-- Hidden input for id -->
                                                     <div class="mb-3">
-                                                        <label for="" class="form-label">User id</label>
+                                                        <label for="userid" class="form-label">User id</label>
                                                         <input type="text" name="userid" id="userid" class="form-control" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="" class="form-label">Date/Time</label>
-                                                        <input type="text" name="date_time" id="date_time" class="form-control" required>
+                                                        <label for="datetime" class="form-label">Date & Time</label>
+                                                        <input type="text" name="datetime" id="datetime" class="form-control" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="" class="form-label">Language preference</label>
-                                                        <input type="text" name="language" id="language" class="form-control" required>
+                                                        <label for="langpref" class="form-label">Language preference</label>
+                                                        <input type="text" name="langpref" id="langpref" class="form-control" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="" class="form-label">Link</label>
-                                                        <input type="text" name="link" id="link" class="form-control" required>
+                                                        <label for="link" class="form-label">Link</label>
+                                                        <input type="url" name="link" id="link" class="form-control" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <input type="text" name="status" id="status" class="form-control" value="Sent" hidden>
                                                     </div>
                                                     <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Submit</button>
                                                     </div>
                                                 </form>
@@ -576,7 +579,6 @@ $row_count4 = mysqli_num_rows($result4);
                                         </div>
                                     </div>
                                 </div>
-
                                 <!------------------Complain form Page Ends----------------->
 
 
@@ -691,27 +693,25 @@ $row_count4 = mysqli_num_rows($result4);
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center"><b>S.No</b></th>
-                                                            <th class="text-center"><b>Problem_id</b></th>
-                                                            <th class="text-center"><b>Venue</b></th>
-                                                            <th class="text-center"><b>Problem</b></th>
-                                                            <th class="text-center"><b>Date Of submission</b></th>
-                                                            <th class="text-center"><b>Date of Completion</b></th>
-                                                            <th class="text-center"><b>Feedback</b></th>
+                                                            <th class="text-center"><b>User_id</b></th>
+                                                            <th class="text-center"><b>Date_time</b></th>
+                                                            <th class="text-center"><b>language prefered</b></th>
+                                                            <th class="text-center"><b>link</b></th>
+                                                            <th class="text-center"><b>status</b></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
                                                         $s = 1;
-                                                        while ($row = mysqli_fetch_assoc($result2)) {
+                                                        while ($row = mysqli_fetch_assoc($result1)) {
                                                         ?>
                                                             <tr>
                                                                 <td class="text-center"><?php echo $s; ?></td>
-                                                                <td class="text-center"><?php echo $row['id']; ?></td>
-                                                                <td class="text-center"><?php echo $row['block_venue']; ?></td>
-                                                                <td class="text-center"><?php echo $row['problem_description']; ?></td>
-                                                                <td class="text-center"><?php echo $row['date_of_reg']; ?></td>
-                                                                <td class="text-center"><?php echo $row['date_of_completion']; ?></td>
-                                                                <td class="text-center"><?php echo $row['feedback']; ?></td>
+                                                                <td class="text-center"><?php echo $row['User_id']; ?></td>
+                                                                <td class="text-center"><?php echo $row['date_time']; ?></td>
+                                                                <td class="text-center"><?php echo $row['language_pre']; ?></td>
+                                                                <td class="text-center"><?php echo $row['link']; ?></td>
+                                                                <td class="text-center"><?php echo $row['status']; ?></td>
                                                             </tr>
                                                         <?php
                                                             $s++;
@@ -735,46 +735,32 @@ $row_count4 = mysqli_num_rows($result4);
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"><b>S.No</b></th>
-                                                    <th class="text-center"><b>Problem_id</b></th>
-                                                    <th class="text-center"><b>Block</b></th>
-                                                    <th class="text-center"><b>Venue</b></th>
-                                                    <th class="text-center"><b>problem description</b></th>
+                                                    <th class="text-center"><b>faculty_id</b></th>
+                                                    <th class="text-center"><b>date_time</b></th>
+                                                    <th class="text-center"><b>language_pre</b></th>
+                                                    <th class="text-center"><b>link</b></th>
                                                     <th class="text-center"><b>Status </b></th>
-                                                    <th class="text-center"><b>Reason </b></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $s = 1;
-                                                while ($row = mysqli_fetch_assoc($result3)) {
-                                                    $statusMessage = '';
-                                                    switch ($row['status']) {
-                                                        case 3:
-                                                            $statusMessage = 'Rejected by Infra';
-                                                            break;
-                                                        case 5:
-                                                            $statusMessage = 'Rejected by HOD';
-                                                            break;
-                                                        case 19:
-                                                            $statusMessage = 'Rejected by Principal';
-                                                            break;
-                                                        case 20:
-                                                            $statusMessage = 'Rejected by Manager';
-                                                            break;
-                                                        default:
-                                                            $statusMessage = 'Unknown Status';
-                                                    }
+                                                while ($row = mysqli_fetch_assoc($result2)) {
                                                 ?>
                                                     <tr>
                                                         <td class="text-center"><?php echo $s; ?></td>
-                                                        <td class="text-center"><?php echo $row['id']; ?></td>
-                                                        <td class="text-center"><?php echo $row['block_venue']; ?></td>
-                                                        <td class="text-center"><?php echo $row['venue_name']; ?></td>
-                                                        <td class="text-center"><?php echo $row['problem_description']; ?></td>
+                                                        <td class="text-center"><?php echo $row['faculty_id']; ?></td>
+                                                        <td class="text-center"><?php echo $row['date_time']; ?></td>
+                                                        <td class="text-center"><?php echo $row['language_pre']; ?></td>
+                                                        <td class="text-center"><?php echo $row['link']; ?></td>
                                                         <td class="text-center">
-                                                            <span class="badge" style="background-color: #ff6666; font-size: 1.2em; color: #000000; padding: 0.25em 0.5em;"><?php echo $statusMessage; ?></span>
+                                                            <button
+                                                                class="btn btn-sm status-btn"
+                                                                data-id="<?php echo $row['id']; ?>"
+                                                                style="background-color: <?php echo ($row['status'] === 'Approved') ? '#28a745' : '#ff6666'; ?>; color: #000000;">
+                                                                <?php echo ($row['status'] === 'Approved') ? 'Approved' : 'Approve'; ?>
+                                                            </button>
                                                         </td>
-                                                        <td class="text-center"><?php echo $row['feedback']; ?></td>
                                                     </tr>
                                                 <?php
                                                     $s++;
@@ -853,6 +839,7 @@ $row_count4 = mysqli_num_rows($result4);
     <!-- ============================================================== -->
 
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -1138,34 +1125,91 @@ $row_count4 = mysqli_num_rows($result4);
         });
     </script>
     <script>
-$(document).on("submit", "#addprofile", function(e) {
-    e.preventDefault();
+        $(document).on("submit", "#addprofile", function(e) {
+            e.preventDefault();
 
-    var formData = new FormData(this);
-    formData.append("save_newuser", true);
+            var formData = new FormData(this);
+            formData.append("save_newuser", true);
 
-    $.ajax({
-        url: 'fbackend.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            var res = jQuery.parseJSON(response);
-            if(res.status == 200){
-                $('#profilemodal').modal('hide');
-                $('#addprofile')[0].reset();
-                alert(res.message);
-            } else {
-                alert("Error: " + res.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX Error:", status, error);
-        }
-    });
-});
+            $.ajax({
+                url: 'fbackend.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 200) {
+                        $('#profilemodal').modal('hide');
+                        $('#addprofile')[0].reset();
+                        alert(res.message);
+                    } else {
+                        alert("Error: " + res.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).on("click", ".status-btn", function() {
+            var button = $(this);
+            var requestId = button.data("id");
 
+            console.log("Button clicked. Request ID:", requestId); // Debugging line
+
+            $.ajax({
+                url: "fbackend.php",
+                type: "POST",
+                data: {
+                    id: requestId
+                },
+                success: function(response) {
+                    console.log("AJAX response:", response); // Debugging line
+                    if (response.status === 200) {
+                        alert("Status updated to Approved.");
+                        button.text("Approved");
+                        button.css("background-color", "#28a745");
+                        button.prop("disabled", true); // Optional: Disable button after approval
+                    } else {
+                        alert("Failed to update status. Message: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        });
+        //Request modal jquery
+        $(document).on("submit", "#addrequest", function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var formData = new FormData(this);
+            formData.append("save_newuser", true);
+
+            $.ajax({
+                url: 'fbackend.php', // Path to your PHP file
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 200) {
+                        $('#requestmodal').modal('hide');
+                        $('#addrequest')[0].reset();
+                        alert(res.message);
+                    } else {
+                        alert("Error: " + res.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        });
     </script>
 </body>
 <div scrible-ignore="" id="skribel_annotation_ignore_browserExtensionFlag" class="skribel_chromeExtension"

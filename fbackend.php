@@ -52,7 +52,64 @@ if (isset($_POST['save_newuser'])) {
         echo json_encode(['status' => 500, 'message' => 'Error: ' . $e->getMessage()]);
     }
 }
+
+
+
 ?>
+<?php
+header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+include("db.php");
+
+if (isset($_POST['id'])) {
+    $id = intval($_POST['id']);
+    $query = "UPDATE request SET status='Approved' WHERE id=$id";
+
+    if (mysqli_query($conn, $query)) {
+        echo json_encode(["status" => 200, "message" => "Status updated successfully"]);
+    } else {
+        echo json_encode(["status" => 500, "message" => "Failed to update status: " . mysqli_error($conn)]);
+    }
+} else {
+    echo json_encode(["status" => 400, "message" => "Invalid request"]);
+}
+?>
+<?php
+// Include database connection
+include 'db.php'; // Modify this as needed to connect to your database
+
+if (isset($_POST['save_newuser'])) {
+    try {
+        $userid = mysqli_real_escape_string($conn, $_POST['userid']);
+        $datetime = mysqli_real_escape_string($conn, $_POST['datetime']);
+        $langpref = mysqli_real_escape_string($conn, $_POST['langpref']);
+        $link = mysqli_real_escape_string($conn, $_POST['link']);
+        $status = mysqli_real_escape_string($conn, $_POST['status']);
+
+        // Insert data into the request table
+        $query = "INSERT INTO request (User_id, date_time, language_pre, link, status) VALUES ('$userid', '$datetime', '$langpref', '$link', '$status')";
+
+        if (mysqli_query($conn, $query)) {
+            $res = [
+                'status' => 200,
+                'message' => 'Details Updated Successfully'
+            ];
+            echo json_encode($res);
+        } else {
+            throw new Exception('Query Failed: ' . mysqli_error($conn));
+        }
+    } catch (Exception $e) {
+        $res = [
+            'status' => 500,
+            'message' => 'Error: ' . $e->getMessage()
+        ];
+        echo json_encode($res);
+    }
+}
+?>
+
 
 
 
