@@ -5,6 +5,64 @@ ini_set('display_errors', 1);
 
 include("db.php");
 
+
+if (isset($_POST['save_newuser'])) {
+    try {
+        $language = mysqli_real_escape_string($conn, $_POST['language']);
+        $specialization = mysqli_real_escape_string($conn, $_POST['specialization']);
+        $qualification = mysqli_real_escape_string($conn, $_POST['qualification']);
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+        // Array to store file paths
+        $documentPaths = [];
+
+        // Check if files are uploaded
+        if (isset($_FILES['document']) && !empty($_FILES['document']['name'][0])) {
+            // Create uploads directory if not exists
+            $uploadDir = 'uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Loop through each file
+            foreach ($_FILES['document']['name'] as $index => $fileName) {
+                $fileTmpPath = $_FILES['document']['tmp_name'][$index];
+                $destinationPath = $uploadDir . basename($fileName);
+
+                // Move the file to the uploads directory
+                if (move_uploaded_file($fileTmpPath, $destinationPath)) {
+                    $documentPaths[] = $destinationPath; // Store path
+                }
+            }
+        }
+
+        // Concatenate file paths with comma separator
+        $document = implode(',', $documentPaths);
+
+        // Insert data into skilltable
+        $query = "INSERT INTO skilltable (Language, Specialization, Qualification, Documents, email) 
+                  VALUES ('$language', '$specialization', '$qualification', '$document', '$email')";
+
+        if (mysqli_query($conn, $query)) {
+            $res = [
+                'status' => 200,
+                'message' => 'Details Updated Successfully'
+            ];
+            echo json_encode($res);
+        } else {
+            throw new Exception('Query Failed: ' . mysqli_error($conn));
+        }
+    } catch (Exception $e) {
+        $res = [
+            'status' => 500,
+            'message' => 'Error: ' . $e->getMessage()
+        ];
+        echo json_encode($res);
+    }
+}
+?>
+
+
 if (!$conn) {
     echo json_encode(['status' => 500, 'message' => 'Database connection failed']);
     exit;
