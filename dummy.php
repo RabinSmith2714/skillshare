@@ -11,16 +11,18 @@ include('db.php'); // Include the configuration file
 // Fetch complaints only for this faculty (if necessary)
 $faculty_id = $_SESSION['faculty_id']; // Assuming 'faculty_id' is stored in session
 
-$query = "SELECT * FROM complaints_detail WHERE faculty_id = '$faculty_id'";
+$query = "SELECT * FROM skilltable WHERE faculty_id = '$faculty_id'";
 $result = mysqli_query($conn, $query);
 
 $sql5 = "SELECT * FROM skilltable";
+$sql6 = "SELECT * FROM skilltable WHERE faculty_id = '$faculty_id'";
 $sql1 = "SELECT * FROM complaints_detail WHERE status IN (7,10,11,17,18) AND faculty_id = '$faculty_id'";
 $sql2 = "SELECT * FROM complaints_detail WHERE status = 16 AND faculty_id = '$faculty_id'";
 $sql3 = "SELECT * FROM complaints_detail WHERE status IN (3,5,19,20) AND faculty_id = '$faculty_id'";
 $sql4 = "SELECT * FROM complaints_detail WHERE status = 15 AND faculty_id = '$faculty_id'";
 
 $result5 = mysqli_query($conn, $sql5);
+$result6 = mysqli_query($conn, $sql6);
 $result1 = mysqli_query($conn, $sql1);
 $result2 = mysqli_query($conn, $sql2);
 $result3 = mysqli_query($conn, $sql3);
@@ -48,13 +50,13 @@ $row_count4 = mysqli_num_rows($result4);
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
-    <title>Faculty Login</title>
+    <title>SkillShare</title>
     <!-- Custom CSS -->
     <link href="assets/libs/flot/css/float-chart.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="dist/css/style.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="assets/images/favicon.png">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
@@ -233,8 +235,6 @@ $row_count4 = mysqli_num_rows($result4);
                 </div>
             </nav>
         </header>
-
-
         <!---profile modal--->
         <div class="modal fade" id="profilemodal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -290,7 +290,7 @@ $row_count4 = mysqli_num_rows($result4);
                     <ul id="sidebarnav" class="p-t-30 in">
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="completedtable.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
-                                    class="hide-menu">Complaints</span></a>
+                                    class="hide-menu">Skill_Share</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -302,7 +302,7 @@ $row_count4 = mysqli_num_rows($result4);
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-body wizard-content">
-                        <h4 class="card-title">Work Information</h4>
+                        <h4 class="card-title">Skills</h4><br>
                         <h6 class="card-subtitle"></h6>
                         <div class="card">
                             <div id="navref">
@@ -339,7 +339,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-people-fill"></i>
                                                     <i class="fas fa-clock"></i>
-                                                    <b>&nbsp my profile (<?php echo $row_count1; ?>)</b>
+                                                    <b>My profile</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -492,6 +492,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                                     <th class="text-center"><b>Qualification</b></th>
                                                                     <th class="text-center"><b>Ratings</b></th>
                                                                     <th class="text-center"><b>Documents</b></th>
+                                                                    <th class="text-center"><b>Mail_id</b></th>
                                                                     <th class="text-center"><b>Request session</b></th>
                                                                 </tr>
                                                             </thead>
@@ -499,8 +500,6 @@ $row_count4 = mysqli_num_rows($result4);
                                                                 <?php
                                                                 $s = 1;
                                                                 while ($row = mysqli_fetch_assoc($result5)) {
-
-
                                                                 ?>
                                                                     <tr>
                                                                         <td class="text-center"><?php echo $s; ?></td>
@@ -514,8 +513,9 @@ $row_count4 = mysqli_num_rows($result4);
                                                                                 <i class="fas fa-image" style="font-size: 25px;"></i>
                                                                             </button>
                                                                         </td>
+                                                                        <td class="text-center"><?php echo $row['email']; ?></td>
                                                                         <td class="text-center">
-                                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Request</button>
+                                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#requestmodal">Request</button>
                                                                         </td>
                                                                     </tr>
                                                                 <?php
@@ -530,8 +530,46 @@ $row_count4 = mysqli_num_rows($result4);
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Request modal -->
 
-
+                                <div class="modal fade" id="requestmodal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(to bottom right, #cc66ff 1%, #0033cc 100%);background-color:#7460ee;">
+                <h5 class="modal-title" id="feedbackModalLabel">Request Form</h5>
+                <button type="button" class="btn-close spbutton" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addrequest" method="post">
+                    <input type="hidden" name="requestid" id="requestid"> <!-- Hidden input for id -->
+                    <div class="mb-3">
+                        <label for="userid" class="form-label">User id</label>
+                        <input type="text" name="userid" id="userid" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="datetime" class="form-label">Date & Time</label>
+                        <input type="text" name="datetime" id="datetime" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="langpref" class="form-label">Language preference</label>
+                        <input type="text" name="langpref" id="langpref" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="link" class="form-label">Link</label>
+                        <input type="url" name="link" id="link" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" name="status" id="status" class="form-control" value="Sent" hidden>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
                                 <!------------------Complain form Page Ends----------------->
@@ -559,63 +597,28 @@ $row_count4 = mysqli_num_rows($result4);
 
                                 <!------------------Work in Progress Starts----------------->
                                 <div class="tab-pane p-20" id="inprogress" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="table-responsive">
-                                                <table id="ProgressTable" class="table table-bordered table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center"><b>S.No</b></th>
-                                                            <th class="text-center"><b>Problem_idb></th>
-                                                            <th class="text-center"><b>Venue</b></th>
-                                                            <th class="text-center"><b>Problem</b></th>
-                                                            <th class="text-center"><b>Problem description</b></th>
-                                                            <th class="text-center"><b>Date Of submission</b></th>
-                                                            <th class="text-center"><b>Worker Details</b></th>
-                                                            <th class="text-center"><b>Feedback</b></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $s = 1;
-                                                        while ($row = mysqli_fetch_assoc($result1)) {
-                                                        ?>
-                                                            <tr>
-                                                                <td class="text-center"><?php echo $s; ?></td>
-                                                                <td class="text-center"><?php echo $row['id']; ?></td>
-                                                                <td class="text-center"><?php echo $row['block_venue']; ?></td>
-                                                                <td class="text-center"><?php echo $row['type_of_problem']; ?></td>
-                                                                <td class="text-center"><?php echo $row['problem_description']; ?></td>
-                                                                <td class="text-center"><?php echo $row['date_of_reg']; ?></td>
-                                                                <td class="text-center">
-                                                                    <button type="button" class="btn btn-light showWorkerDetails" value="<?php echo $row['id']; ?>">
-                                                                        <?php
-                                                                        $prblm_id = $row['id'];
-                                                                        $querry = "SELECT worker_first_name FROM worker_details WHERE worker_id = ( SELECT worker_id FROM manager WHERE problem_id = '$prblm_id')";
-                                                                        $querry_run = mysqli_query($conn, $querry);
-                                                                        $worker_name = mysqli_fetch_array($querry_run);
-                                                                        echo $worker_name['worker_first_name']; ?>
-                                                                    </button>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <?php if ($row['status'] == 11 || $row['status'] == 18) { ?>
-                                                                        <!-- Button to open the feedback modal -->
-                                                                        <button type="button" class="btn btn-info feedbackBtn" data-problem-id="<?php echo $row['id']; ?>" data-bs-toggle="modal" data-bs-target="#feedback_modal">Feedback</button>
-                                                                    <?php } else { ?>
-                                                                        <button type="button" disabled>Feedback</button>
-                                                                    <?php } ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php
-                                                            $s++;
-                                                        }
-                                                        ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                    <?php
+                                    // Fetch a single row without a loop
+                                    $row = mysqli_fetch_assoc($result6);
+                                    if ($row) { // Check if a row is found
+                                    ?>
+                                        <div class="card">
+                                            <h3 id="car-name">Profile</h3>
+                                            <p> Name: <?php echo $row['User_name']; ?></p>
+                                            <p> User_ID: <?php echo $row['faculty_id']; ?></p>
+                                            <p> Language: <?php echo $row['Language']; ?></p>
+                                            <p> Specialization: <?php echo $row['Specialization']; ?></p>
+                                            <p> Qualification: <?php echo $row['Qualification']; ?></p>
+                                            <p> Ratings: <?php echo $row['Rating']; ?></p>
+                                            <p> Mail ID: <?php echo $row['email']; ?></p>
                                         </div>
-                                    </div>
+                                    <?php
+                                    } else {
+                                        echo "<p>No profile information available.</p>";
+                                    }
+                                    ?>
                                 </div>
+
                                 <!------------------Work in Progress Table Ends----------------->
 
 
@@ -874,7 +877,7 @@ $row_count4 = mysqli_num_rows($result4);
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>                                                   
     <!-- Set Today date in Raise Complaint-->
     <script>
         var today = new Date().toISOString().split('T')[0];
@@ -895,7 +898,6 @@ $row_count4 = mysqli_num_rows($result4);
             }
         });
     </script>
-
 
 
     <!--file size and type -->
@@ -928,47 +930,7 @@ $row_count4 = mysqli_num_rows($result4);
     </script>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-        //update profile
-
-    $(document).on("submit","#addprofile", function(e) {
-        e.preventDefault(); // Prevent default form submission
-
-        // Prepare form data including file
-        var formData = new FormData(this);
-        console.log(formData);
-        formData.append("save_newuser", true);
-        // AJAX request
-        $.ajax({
-            url: 'fbackend.php', // URL to send the data
-            type: 'POST',
-            data: formData,
-            processData: false, // Required for FormData
-            contentType: false, // Required for FormData
-            success: function(response) {
-                // Display response from backend
-                var res=jQuery.parseJSON(response);
-                console.log(res);
-                if(res.status==200){
-                    $('#profilemodal').modal('hide');
-                    $('#addprofile')[0].reset();
-                    alert(res.message);
-                }
-                else {
-                alert("Error: " + res.message);
-            }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error:", status, error);
-            }
-        });
-    });
-
-
-
-
-
+    <script>
         // Add Faculty complaints to database
         $(document).on('submit', '#addnewuser', function(e) {
             e.preventDefault(); // Prevent form from submitting normally
@@ -1169,6 +1131,72 @@ $row_count4 = mysqli_num_rows($result4);
                 }
             });
         });
+    </script>
+    <script>
+        $(document).on("submit","#addprofile", function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        // Prepare form data including file
+        var formData = new FormData(this);
+        console.log(formData);
+        formData.append("save_newuser", true);
+        // AJAX request
+        $.ajax({
+            url: 'fbackend.php', // URL to send the data
+            type: 'POST',
+            data: formData,
+            processData: false, // Required for FormData
+            contentType: false, // Required for FormData
+            success: function(response) {
+                // Display response from backend
+                var res=jQuery.parseJSON(response);
+                console.log(res);
+                if(res.status==200){
+                    $('#profilemodal').modal('hide');
+                    $('#addprofile')[0].reset();
+                    alert(res.message);
+                }
+                else {
+                alert("Error: " + res.message);
+            }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+            }
+        });
+    });
+
+
+    //Request modal jquery
+    $(document).on("submit", "#addrequest", function(e) {
+    e.preventDefault(); // Prevent default form submission
+
+    var formData = new FormData(this);
+    formData.append("save_newuser", true);
+
+    $.ajax({
+        url: 'fbackend.php', // Path to your PHP file
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            var res = jQuery.parseJSON(response);
+            if (res.status == 200) {
+                $('#requestmodal').modal('hide');
+                $('#addrequest')[0].reset();
+                alert(res.message);
+            } else {
+                alert("Error: " + res.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", status, error);
+        }
+    });
+});
+
+
     </script>
 </body>
 <div scrible-ignore="" id="skribel_annotation_ignore_browserExtensionFlag" class="skribel_chromeExtension"
