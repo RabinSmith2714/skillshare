@@ -244,33 +244,40 @@ $row_count4 = mysqli_num_rows($result4);
                         <button class="spbutton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </div>
                     <div class="modal-body">
-                        <form id="addprofile">
-                            <input type="hidden" name="id" id="feedback_id"> <!-- Hidden input for id -->
-                            <div class="mb-3">
-                                <label for="language" class="form-label">Language</label>
-                                <input type="text"  name="language" id="language" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="specialization" class="form-label">Specialization</label>
-                                <input type="text" name="specialization" id="specialization" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="qualification" class="form-label">Qualification</label>
-                                <input type="text" name="qualification" id="qualification" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="document" class="form-label">Document(s)</label>
-                                <input type="file" name="document[]" id="document" class="form-control" multiple required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" required>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                        </form>
+                    <form id="addprofile" enctype="multipart/form-data">
+    <!-- Faculty ID from session -->
+    <div class="mb-3">
+        <label for="faculty_id" class="form-label">Faculty ID</label>
+        <input type="text" name="faculty_id" id="faculty_id" class="form-control" value="<?php echo $_SESSION['faculty_id']; ?>" readonly>
+    </div>
+    
+    <!-- Other form fields -->
+    <div class="mb-3">
+        <label for="language" class="form-label">Language</label>
+        <input type="text" name="language" id="language" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="specialization" class="form-label">Specialization</label>
+        <input type="text" name="specialization" id="specialization" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="qualification" class="form-label">Qualification</label>
+        <input type="text" name="qualification" id="qualification" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="document" class="form-label">Document(s)</label>
+        <input type="file" name="document[]" id="document" class="form-control" multiple required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
+
                     </div>
                 </div>
             </div>
@@ -1131,38 +1138,33 @@ $row_count4 = mysqli_num_rows($result4);
         });
     </script>
     <script>
-        $(document).on("submit","#addprofile", function(e) {
-        e.preventDefault(); // Prevent default form submission
+$(document).on("submit", "#addprofile", function(e) {
+    e.preventDefault();
 
-        // Prepare form data including file
-        var formData = new FormData(this);
-        console.log(formData);
-        formData.append("save_newuser", true);
-        // AJAX request
-        $.ajax({
-            url: 'fbackend.php', // URL to send the data
-            type: 'POST',
-            data: formData,
-            processData: false, // Required for FormData
-            contentType: false, // Required for FormData
-            success: function(response) {
-                // Display response from backend
-                var res=jQuery.parseJSON(response);
-                console.log(res);
-                if(res.status==200){
-                    $('#profilemodal').modal('hide');
-                    $('#addprofile')[0].reset();
-                    alert(res.message);
-                }
-                else {
+    var formData = new FormData(this);
+    formData.append("save_newuser", true);
+
+    $.ajax({
+        url: 'fbackend.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            var res = jQuery.parseJSON(response);
+            if(res.status == 200){
+                $('#profilemodal').modal('hide');
+                $('#addprofile')[0].reset();
+                alert(res.message);
+            } else {
                 alert("Error: " + res.message);
             }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error:", status, error);
-            }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", status, error);
+        }
     });
+});
 
     </script>
 </body>

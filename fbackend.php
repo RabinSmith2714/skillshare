@@ -1,10 +1,14 @@
 <?php
+session_start();
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 include("db.php");
 
+$faculty_id = $_SESSION['faculty_id'] ?? null;
+
+if (!$faculty_id) {
+    echo json_encode(['status' => 400, 'message' => 'Faculty ID is missing.']);
+    exit();
+}
 
 if (isset($_POST['save_newuser'])) {
     try {
@@ -13,54 +17,43 @@ if (isset($_POST['save_newuser'])) {
         $qualification = mysqli_real_escape_string($conn, $_POST['qualification']);
         $email = mysqli_real_escape_string($conn, $_POST['email']);
 
-        // Array to store file paths
         $documentPaths = [];
 
-        // Check if files are uploaded
         if (isset($_FILES['document']) && !empty($_FILES['document']['name'][0])) {
-            // Create uploads directory if not exists
             $uploadDir = 'uploads/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            // Loop through each file
             foreach ($_FILES['document']['name'] as $index => $fileName) {
                 $fileTmpPath = $_FILES['document']['tmp_name'][$index];
                 $destinationPath = $uploadDir . basename($fileName);
 
-                // Move the file to the uploads directory
                 if (move_uploaded_file($fileTmpPath, $destinationPath)) {
-                    $documentPaths[] = $destinationPath; // Store path
+                    $documentPaths[] = $destinationPath;
+                } else {
+                    throw new Exception("Failed to upload file: $fileName");
                 }
             }
         }
 
-        // Concatenate file paths with comma separator
         $document = implode(',', $documentPaths);
 
-        // Insert data into skilltable
-        $query = "INSERT INTO skilltable (Language, Specialization, Qualification, Documents, email) 
-                  VALUES ('$language', '$specialization', '$qualification', '$document', '$email')";
+        $query = "UPDATE skilltable 
+                  SET Language = '$language', Specialization = '$specialization', Qualification = '$qualification', Documents = '$document', email = '$email'
+                  WHERE faculty_id = '$faculty_id'";
 
         if (mysqli_query($conn, $query)) {
-            $res = [
-                'status' => 200,
-                'message' => 'Details Updated Successfully'
-            ];
-            echo json_encode($res);
+            echo json_encode(['status' => 200, 'message' => 'Details Updated Successfully']);
         } else {
             throw new Exception('Query Failed: ' . mysqli_error($conn));
         }
     } catch (Exception $e) {
-        $res = [
-            'status' => 500,
-            'message' => 'Error: ' . $e->getMessage()
-        ];
-        echo json_encode($res);
+        echo json_encode(['status' => 500, 'message' => 'Error: ' . $e->getMessage()]);
     }
 }
 ?>
+
 
 
 if (!$conn) {
