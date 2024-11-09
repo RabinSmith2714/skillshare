@@ -13,10 +13,10 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2 class="text-center">Faculty Login</h2>
+                <h2 class="text-center">User Login</h2>
                 <form action="login_backend.php" method="post">
                     <div class="form-group">
-                        <label for="faculty_id">Faculty ID</label>
+                        <label for="faculty_id">User ID</label>
                         <input type="text" class="form-control" id="faculty_id" name="faculty_id" required>
                     </div>
                     <div class="form-group">
