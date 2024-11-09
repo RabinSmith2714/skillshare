@@ -1124,7 +1124,7 @@ $s++;
         });
         $(document).ready(function() {
     // Listen for form submission
-    $('#addprofile').submit(function(e) {
+    $('#addrequest').submit(function(e) {
         e.preventDefault();  // Prevent default form submission
 
         // Serialize the form data
@@ -1132,24 +1132,29 @@ $s++;
 
         // Send data via AJAX
         $.ajax({
-            type: 'POST',
-            url: 'submit_request.php',  // Path to the PHP script
-            data: formData,
-            success: function(response) {
-                var data = JSON.parse(response);  // Decode the JSON response
-
-                // Show a success message or handle error
-                if (data.status === 'success') {
-                    alert(data.message);  // Success message
-                    $('#request_modal').modal('hide');  // Close the modal
-                } else {
-                    alert(data.message);  // Error message
-                }
-            },
-            error: function() {
-                alert('An error occurred. Please try again later.');
+    type: 'POST',
+    url: 'submit_request.php',
+    data: formData,
+    success: function(response) {
+        try {
+            // Parse JSON response
+            var data = JSON.parse(response);
+            if (data.status === 'success') {
+                alert(data.message);
+                $('#request_modal').modal('hide');
+            } else {
+                alert(data.message);
             }
-        });
+        } catch (e) {
+            console.error("Error parsing JSON:", e);
+            alert("Unexpected error. Please try again later.");
+        }
+    },
+    error: function() {
+        alert('An error occurred. Please try again.');
+    }
+});
+
     });
 });
 
