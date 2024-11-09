@@ -11,16 +11,18 @@ include('db.php'); // Include the configuration file
 // Fetch complaints only for this faculty (if necessary)
 $faculty_id = $_SESSION['faculty_id']; // Assuming 'faculty_id' is stored in session
 
-$query = "SELECT * FROM complaints_detail WHERE faculty_id = '$faculty_id'";
+$query = "SELECT * FROM skilltable WHERE faculty_id = '$faculty_id'";
 $result = mysqli_query($conn, $query);
 
 $sql5 = "SELECT * FROM skilltable";
+$sql6 = "SELECT * FROM skilltable WHERE faculty_id = '$faculty_id'";
 $sql1 = "SELECT * FROM complaints_detail WHERE status IN (7,10,11,17,18) AND faculty_id = '$faculty_id'";
 $sql2 = "SELECT * FROM complaints_detail WHERE status = 16 AND faculty_id = '$faculty_id'";
 $sql3 = "SELECT * FROM complaints_detail WHERE status IN (3,5,19,20) AND faculty_id = '$faculty_id'";
 $sql4 = "SELECT * FROM complaints_detail WHERE status = 15 AND faculty_id = '$faculty_id'";
 
 $result5 = mysqli_query($conn, $sql5);
+$result6 = mysqli_query($conn, $sql6);
 $result1 = mysqli_query($conn, $sql1);
 $result2 = mysqli_query($conn, $sql2);
 $result3 = mysqli_query($conn, $sql3);
@@ -247,7 +249,7 @@ $row_count4 = mysqli_num_rows($result4);
                     <ul id="sidebarnav" class="p-t-30 in">
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="completedtable.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
-                                    class="hide-menu">Complaints</span></a>
+                                    class="hide-menu">Skill_Share</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -259,7 +261,7 @@ $row_count4 = mysqli_num_rows($result4);
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-body wizard-content">
-                        <h4 class="card-title">Work Information</h4>
+                        <h4 class="card-title">Skills</h4><br>
                         <h6 class="card-subtitle"></h6>
                         <div class="card">
                             <div id="navref">
@@ -296,7 +298,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-people-fill"></i>
                                                     <i class="fas fa-clock"></i>
-                                                    <b>&nbsp my profile (<?php echo $row_count1; ?>)</b>
+                                                    <b>My profile</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -324,7 +326,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                 <span class="hidden-xs-down">
                                                     <i class="bi bi-house-door-fill"></i>
                                                     <i class="mdi mdi-close-circle"></i>
-                                                    <b>&nbsp Requests Received  (<?php echo $row_count3; ?>)</b>
+                                                    <b>&nbsp Requests Received (<?php echo $row_count3; ?>)</b>
                                                 </span>
                                             </div>
                                         </a>
@@ -406,7 +408,7 @@ $row_count4 = mysqli_num_rows($result4);
 
                                 <!------------------Pending Work Modal----------------->
                                 <div class="tab-pane p-20" id="home" role="tabpanel">
-                                    
+
                                     <!--pending work modal end -->
 
                                     <div class="modal fade" id="lettermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -449,6 +451,7 @@ $row_count4 = mysqli_num_rows($result4);
                                                                     <th class="text-center"><b>Qualification</b></th>
                                                                     <th class="text-center"><b>Ratings</b></th>
                                                                     <th class="text-center"><b>Documents</b></th>
+                                                                    <th class="text-center"><b>Mail_id</b></th>
                                                                     <th class="text-center"><b>Request session</b></th>
                                                                 </tr>
                                                             </thead>
@@ -456,8 +459,6 @@ $row_count4 = mysqli_num_rows($result4);
                                                                 <?php
                                                                 $s = 1;
                                                                 while ($row = mysqli_fetch_assoc($result5)) {
-                                                                    
-                                                                    
                                                                 ?>
                                                                     <tr>
                                                                         <td class="text-center"><?php echo $s; ?></td>
@@ -471,8 +472,9 @@ $row_count4 = mysqli_num_rows($result4);
                                                                                 <i class="fas fa-image" style="font-size: 25px;"></i>
                                                                             </button>
                                                                         </td>
+                                                                        <td class="text-center"><?php echo $row['email']; ?></td>
                                                                         <td class="text-center">
-                                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Request</button>
+                                                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approvaldetails">Request</button>
                                                                         </td>
                                                                     </tr>
                                                                 <?php
@@ -516,63 +518,28 @@ $row_count4 = mysqli_num_rows($result4);
 
                                 <!------------------Work in Progress Starts----------------->
                                 <div class="tab-pane p-20" id="inprogress" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="table-responsive">
-                                                <table id="ProgressTable" class="table table-bordered table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center"><b>S.No</b></th>
-                                                            <th class="text-center"><b>Problem_idb></th>
-                                                            <th class="text-center"><b>Venue</b></th>
-                                                            <th class="text-center"><b>Problem</b></th>
-                                                            <th class="text-center"><b>Problem description</b></th>
-                                                            <th class="text-center"><b>Date Of submission</b></th>
-                                                            <th class="text-center"><b>Worker Details</b></th>
-                                                            <th class="text-center"><b>Feedback</b></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $s = 1;
-                                                        while ($row = mysqli_fetch_assoc($result1)) {
-                                                        ?>
-                                                            <tr>
-                                                                <td class="text-center"><?php echo $s; ?></td>
-                                                                <td class="text-center"><?php echo $row['id']; ?></td>
-                                                                <td class="text-center"><?php echo $row['block_venue']; ?></td>
-                                                                <td class="text-center"><?php echo $row['type_of_problem']; ?></td>
-                                                                <td class="text-center"><?php echo $row['problem_description']; ?></td>
-                                                                <td class="text-center"><?php echo $row['date_of_reg']; ?></td>
-                                                                <td class="text-center">
-                                                                    <button type="button" class="btn btn-light showWorkerDetails" value="<?php echo $row['id']; ?>">
-                                                                        <?php
-                                                                        $prblm_id = $row['id'];
-                                                                        $querry = "SELECT worker_first_name FROM worker_details WHERE worker_id = ( SELECT worker_id FROM manager WHERE problem_id = '$prblm_id')";
-                                                                        $querry_run = mysqli_query($conn, $querry);
-                                                                        $worker_name = mysqli_fetch_array($querry_run);
-                                                                        echo $worker_name['worker_first_name']; ?>
-                                                                    </button>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <?php if ($row['status'] == 11 || $row['status'] == 18) { ?>
-                                                                        <!-- Button to open the feedback modal -->
-                                                                        <button type="button" class="btn btn-info feedbackBtn" data-problem-id="<?php echo $row['id']; ?>" data-bs-toggle="modal" data-bs-target="#feedback_modal">Feedback</button>
-                                                                    <?php } else { ?>
-                                                                        <button type="button" disabled>Feedback</button>
-                                                                    <?php } ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php
-                                                            $s++;
-                                                        }
-                                                        ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                    <?php
+                                    // Fetch a single row without a loop
+                                    $row = mysqli_fetch_assoc($result6);
+                                    if ($row) { // Check if a row is found
+                                    ?>
+                                        <div class="card">
+                                            <h3 id="car-name">Profile</h3>
+                                            <p> Name: <?php echo $row['User_name']; ?></p>
+                                            <p> User_ID: <?php echo $row['faculty_id']; ?></p>
+                                            <p> Language: <?php echo $row['Language']; ?></p>
+                                            <p> Specialization: <?php echo $row['Specialization']; ?></p>
+                                            <p> Qualification: <?php echo $row['Qualification']; ?></p>
+                                            <p> Ratings: <?php echo $row['Rating']; ?></p>
+                                            <p> Mail ID: <?php echo $row['email']; ?></p>
                                         </div>
-                                    </div>
+                                    <?php
+                                    } else {
+                                        echo "<p>No profile information available.</p>";
+                                    }
+                                    ?>
                                 </div>
+
                                 <!------------------Work in Progress Table Ends----------------->
 
 
